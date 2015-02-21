@@ -9,4 +9,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/timer_text" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/time_disp"
+        android:layout_below="@+id/timer_text"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

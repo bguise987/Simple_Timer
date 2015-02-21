@@ -1,29 +1,58 @@
 package com.example.bguise.simpletimer;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import java.util.Calendar;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    private TextView timeDisp;
+
+    private IntentFilter filter;
+    private BroadcastReceiver receiver;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView timeDisp = (TextView)findViewById(R.id.time_disp);
-        Calendar c = Calendar.getInstance();
-        int hours = c.get(Calendar.HOUR_OF_DAY);
-        int minutes = c.get(Calendar.MINUTE);
-        int seconds = c.get(Calendar.SECOND);
-        timeDisp.setText(hours + ":" + minutes + ":" + seconds);
+        timeDisp = (TextView)findViewById(R.id.time_disp);
+
+        /* Setup our BroadcastReceiver */
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                /* Extract String of current time from Intent */
+                String currTime = intent.getStringExtra("time");
+                /* Update the display with current time String */
+                timeDisp.setText(currTime);
+            }
+        };
+
+
+
+        filter = new IntentFilter();
+        filter.addAction("TIME_UPDATE");
+
+        registerReceiver(receiver, filter);
+
+        startService(new Intent(MainActivity.this, TimerService.class));
     }
 
+    @Override
+    protected void onDestroy() {
+        stopService(new Intent (MainActivity.this, TimerService.class));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
